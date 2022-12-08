@@ -55,3 +55,11 @@ def user_register(request):
         return Response({'data': 'Passwords not match!'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+		@api_view(['GET'])
+def user_data(request):
+    try:
+        user = CustomUser.objects.get(pk=request.user.id)
+        serialized_user = UserSerializer(user)
+        return Response(serialized_user.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'user does not exits!'}, status=status.HTTP_404_NOT_FOUND)
