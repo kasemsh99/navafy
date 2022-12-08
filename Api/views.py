@@ -162,3 +162,11 @@ def add_like(request, media_id):
     else:
         return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+def liked_media_list(request):
+    try:
+        medias = Media.objects.filter(likes__isnull=False)
+        serialized_medias = MediaSerializer(medias, many=True)
+        return Response(serialized_medias.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'liked media does not exits!'}, status=status.HTTP_404_NOT_FOUND)

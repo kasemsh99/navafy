@@ -18,6 +18,8 @@ urlpatterns = [
 	path('comment/create/', views.comment_create),
 
 	path('media/<int:media_id>/like/add/', views.add_like),
+
+	path('media/liked/list/', views.liked_media_list),
 		
 
 
