@@ -101,6 +101,18 @@ def artist_data(request):
     except:
         return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['PUT'])
+def artist_edit(request):
+    if not hasattr(request.user, 'artist'):
+        return Response({'data': 'You dont have access!'}, status=status.HTTP_400_BAD_REQUEST)
+    artist = Artist.objects.filter(pk=request.user.artist.id)
+    if artist.exists():
+        artist = artist.first()
+        serialized_artist = ArtistSerializer(artist, data=request.data, partial=True)
+        if serialized_artist.is_valid():
+            serialized_artist.save()
+            return Response(serialized_artist.data, status=status.HTTP_200_OK)
+    return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
 def media_create(request):
