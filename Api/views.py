@@ -119,9 +119,9 @@ def media_create(request):
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-def categorized_media(request):
+def categorized_liked_media(request):
     try:
-        medias = Media.objects.filter(type=request.GET.get('type', 1))
+        medias = Media.objects.filter(type=request.GET.get('type', 1), likes__isnull=False)
         serialized_medias = MediaSerializer(medias, many=True)
         return Response(serialized_medias.data, status=status.HTTP_200_OK)
     except:
