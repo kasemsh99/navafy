@@ -55,7 +55,7 @@ def user_register(request):
         return Response({'data': 'Passwords not match!'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-		@api_view(['GET'])
+@api_view(['GET'])
 def user_data(request):
     try:
         user = CustomUser.objects.get(pk=request.user.id)
@@ -63,3 +63,13 @@ def user_data(request):
         return Response(serialized_user.data, status=status.HTTP_200_OK)
     except:
         return Response({'data': 'user does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+		
+@api_view(['PUT'])
+def profile_edit(request):
+    serialized_artist = UserSerializer(request.user, data=request.data, partial=True)
+    if serialized_artist.is_valid():
+        serialized_artist.save()
+        return Response(serialized_artist.data, status=status.HTTP_200_OK)
+    return Response({'data': 'invalid data'}, status=status.HTTP_404_NOT_FOUND)
