@@ -118,6 +118,15 @@ def media_create(request):
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def categorized_media(request):
+    try:
+        medias = Media.objects.filter(type=request.GET.get('type', 1))
+        serialized_medias = MediaSerializer(medias, many=True)
+        return Response(serialized_medias.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'categorized media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['POST'])
 def user_unfollow(request):
     try:
