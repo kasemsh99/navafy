@@ -101,3 +101,32 @@ def artist_edit(request):
             serialized_artist.save()
             return Response(serialized_artist.data, status=status.HTTP_200_OK)
     return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+	@api_view(['GET'])
+def search(request):
+    media_lookup = Q()
+    artist_lookup = Q()
+    if title := request.GET.get('title', ''):
+        media_lookup &= Q(title__contains=title)
+    if media_type := request.GET.get('type', ''):
+        media_lookup &= Q(type=media_type)
+    if genre := request.GET.get('genre', ''):
+        artist_lookup &= Q(genre=genre)
+        media_lookup &= Q(genre=genre)
+    if username := request.GET.get('username', ''):
+        artist_lookup &= Q(user__username__contains=username)
+        media_lookup &= Q(artist__user__username__contains=username)
+    if first_name := request.GET.get('first_name', ''):
+        artist_lookup &= Q(user__first_name__contains=first_name)
+        media_lookup &= Q(artist__user__first_name__contains=first_name)
+    if last_name := request.GET.get('last_name', ''):
+        artist_lookup &= Q(user__last_name__contains=last_name)
+        media_lookup &= Q(artist__user__last_name__contains=last_name)
+
+    artists, medias = [], []
+    if len(media_lookup.children) != 0:
+        medias = list(MediaSerializer(Media.objects.filter(media_lookup), many=True).data)
+    if len(artist_lookup.children) != 0:
+        artists = list(ArtistSerializer(Artist.objects.filter(artist_lookup), many=True).data)
+    return Response(list(chain(artists, medias)), status=status.HTTP_200_OK)

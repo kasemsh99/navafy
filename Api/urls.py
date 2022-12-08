@@ -11,4 +11,6 @@ urlpatterns = [
 	path('artist/', views.artist_data),
 	path('artist/edit/', views.artist_edit),
 
+	path('search/', views.search),
+
 ]
