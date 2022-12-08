@@ -170,3 +170,12 @@ def liked_media_list(request):
         return Response(serialized_medias.data, status=status.HTTP_200_OK)
     except:
         return Response({'data': 'liked media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def categorized_liked_media(request):
+    try:
+        medias = Media.objects.filter(type=request.GET.get('type', 1), likes__isnull=False)
+        serialized_medias = MediaSerializer(medias, many=True)
+        return Response(serialized_medias.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'categorized media does not exits!'}, status=status.HTTP_404_NOT_FOUND)

@@ -20,6 +20,8 @@ urlpatterns = [
 	path('media/<int:media_id>/like/add/', views.add_like),
 
 	path('media/liked/list/', views.liked_media_list),
+
+	path('media/liked/categorized/list/', views.categorized_liked_media),
 		
 
 
