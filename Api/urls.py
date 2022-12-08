@@ -9,5 +9,6 @@ urlpatterns = [
 	path('profile/edit/', views.profile_edit),
 
 	path('artist/', views.artist_data),
+	path('artist/edit/', views.artist_edit),
 
 ]
