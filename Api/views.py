@@ -73,3 +73,16 @@ def profile_edit(request):
         serialized_artist.save()
         return Response(serialized_artist.data, status=status.HTTP_200_OK)
     return Response({'data': 'invalid data'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+@api_view(['GET'])
+def artist_data(request):
+    if not hasattr(request.user, 'artist'):
+        return Response({'data': 'You dont have access!'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        artist = Artist.objects.get(pk=request.user.artist.id)
+        serialized_artist = ArtistSerializer(artist)
+        return Response(serialized_artist.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
