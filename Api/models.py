@@ -17,3 +17,12 @@ class Comment(models.Model):
     text = models.TextField()
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
+
+class Post(models.Model):
+    title = models.CharField(max_length=50)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    media = models.OneToOneField(Media, on_delete=models.CASCADE)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'user {self.user} post {self.media}'

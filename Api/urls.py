@@ -22,6 +22,7 @@ urlpatterns = [
 	path('media/liked/list/', views.liked_media_list),
 
 	path('media/liked/categorized/list/', views.categorized_liked_media),
+	path('post/create/', views.post_create),
 		
 
 
