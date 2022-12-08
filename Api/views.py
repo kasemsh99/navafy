@@ -27,3 +27,31 @@ def user_login(request):
         }, status=status.HTTP_200_OK)
     return Response({'data': 'invalid Username or Password!'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+	
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def user_register(request):
+    user = CustomUser.objects.filter(username=request.POST.get('username'))
+    if user.exists():
+        return Response({'data': 'Username already exists!'}, status=status.HTTP_400_BAD_REQUEST)
+    if request.POST.get('password') == request.POST.get('re_password'):
+        try:
+            user_serializer = UserSerializer(data=request.data)
+            if user_serializer.is_valid():
+                new_user = user_serializer.save()
+                token, created = Token.objects.get_or_create(user=new_user)
+                new_user.save()
+                return Response({
+                    'data': 'registered successfully.',
+                    'token': token.key,
+                    'user_id': new_user.pk,
+                    'artist_id': new_user.artist.pk if hasattr(new_user, 'artist') else "",
+                    'email': new_user.email
+                }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'data': 'Passwords not match!'}, status=status.HTTP_400_BAD_REQUEST)
+
+
