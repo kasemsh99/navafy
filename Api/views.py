@@ -180,3 +180,12 @@ def add_media_to_favorite(request, favorite_id):
         return Response({'data': 'the favorite data updated successfully.'}, status=status.HTTP_200_OK)
     else:
         return Response({'data': 'favorite does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def favorite_data(request):
+    try:
+        favorite = Favorite.objects.filter(user_id=request.user.id)
+        serialized_favorite = FavoriteSerializer(favorite, many=True)
+        return Response(serialized_favorite.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'favorite does not exits!'}, status=status.HTTP_404_NOT_FOUND)
