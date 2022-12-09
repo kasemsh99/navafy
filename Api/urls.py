@@ -22,6 +22,8 @@ urlpatterns = [
 	path('favorite/', views.favorite_data),
 	path('favorite/<int:favorite_id>/media/list/', views.favorite_medias_list),
 
+	path('comment/create/', views.comment_create),
+
 
 
 ]

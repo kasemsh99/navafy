@@ -18,3 +18,11 @@ class Favorite(models.Model):
     def __str__(self):
         return self.title
 
+
+class Comment(models.Model):
+    text = models.TextField()
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    media = models.ForeignKey(Media, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'user {self.user} Comment on {self.media}'
