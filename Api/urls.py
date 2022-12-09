@@ -13,4 +13,8 @@ urlpatterns = [
 
 	path('search/', views.search),
 
+	path('media/<int:media_id>/like/add/', views.add_like),
+
+
+
 ]

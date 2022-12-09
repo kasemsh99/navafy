@@ -103,7 +103,7 @@ def artist_edit(request):
     return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
 
-	@api_view(['GET'])
+@api_view(['GET'])
 def search(request):
     media_lookup = Q()
     artist_lookup = Q()
@@ -130,3 +130,14 @@ def search(request):
     if len(artist_lookup.children) != 0:
         artists = list(ArtistSerializer(Artist.objects.filter(artist_lookup), many=True).data)
     return Response(list(chain(artists, medias)), status=status.HTTP_200_OK)
+
+
+    
+@api_view(['GET'])
+def liked_media_list(request):
+    try:
+        medias = Media.objects.filter(likes__isnull=False)
+        serialized_medias = MediaSerializer(medias, many=True)
+        return Response(serialized_medias.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'liked media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
