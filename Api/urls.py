@@ -23,6 +23,7 @@ urlpatterns = [
 	path('favorite/<int:favorite_id>/media/list/', views.favorite_medias_list),
 
 	path('comment/create/', views.comment_create),
+	path('media/<int:media_id>/like/add/', views.add_like),
 
 
 

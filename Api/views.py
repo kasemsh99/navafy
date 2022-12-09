@@ -214,3 +214,13 @@ def comment_create(request):
         return Response(serialized_comment.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def add_like(request, media_id):
+    media = Media.objects.filter(pk=media_id)
+    if media.exists():
+        media = media.first()
+        media.likes.add(request.user)
+        return Response({'data': 'the media data updated successfully.'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
