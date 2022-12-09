@@ -49,3 +49,21 @@ class Media(models.Model):
 
     def __str__(self):
         return self.title
+
+class Following(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    followed = models.ManyToManyField(CustomUser, related_name="followed")
+    follower = models.ManyToManyField(CustomUser, related_name="follower")
+
+    @classmethod
+    def follow(cls, user, another_account):
+        obj, create = cls.objects.get_or_create(user=user)
+        obj.followed.add(another_account)
+
+    @classmethod
+    def unfollow(cls, user, another_account):
+        obj, create = cls.objects.get_or_create(user=user)
+        obj.followed.remove(another_account)
+
+    def __str__(self):
+        return f'{self.user.username} Profile'

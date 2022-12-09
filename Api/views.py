@@ -272,3 +272,13 @@ def media_create(request):
             return Response(serialized_media.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def user_follow(request):
+    try:
+        user_id = request.POST.get('user_id')
+        follow_user = CustomUser.objects.get(id=user_id)
+        Following.follow(user=request.user, another_account=follow_user)
+        return Response({'data': 'followed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)

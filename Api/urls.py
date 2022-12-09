@@ -21,13 +21,13 @@ urlpatterns = [
 	path('favorite/<int:favorite_id>/media/add/', views.add_media_to_favorite),
 	path('favorite/', views.favorite_data),
 	path('favorite/<int:favorite_id>/media/list/', views.favorite_medias_list),
-
+	path('user/follow/', views.user_follow),
 	path('comment/create/', views.comment_create),
 	path('media/<int:media_id>/like/add/', views.add_like),
-
+	
 	path('post/create/', views.post_create),
 	path('user/<int:user_id>/post/list/', views.user_posts_list),
 	path('media/create/', views.media_create),
-
+	
 
 ]
