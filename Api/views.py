@@ -292,3 +292,13 @@ def user_unfollow(request):
         return Response({'data': 'unfollowed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def followed_users_list(request):
+    try:
+        following = Following.objects.get(user_id=request.user.id)
+        followed_users = following.followed.all()
+        serialized_users = UserSerializer(followed_users, many=True)
+        return Response(serialized_users.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'following does not exits!'}, status=status.HTTP_404_NOT_FOUND)
