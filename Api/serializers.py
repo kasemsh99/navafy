@@ -15,3 +15,9 @@ class UserSerializer(serializers.ModelSerializer):
             Artist.objects.create(user_id=user.id)
         user.save()
         return user
+        
+class MediaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Media
+        fields = '__all__'

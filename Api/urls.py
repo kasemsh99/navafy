@@ -27,7 +27,7 @@ urlpatterns = [
 
 	path('post/create/', views.post_create),
 	path('user/<int:user_id>/post/list/', views.user_posts_list),
-
+	path('media/create/', views.media_create),
 
 
 ]
