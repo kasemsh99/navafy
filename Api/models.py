@@ -9,4 +9,12 @@ class Artist(models.Model):
     bio = models.TextField(null=True, blank=True)
 
 
-    
+
+class Favorite(models.Model):
+    title = models.CharField(max_length=50)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    medias = models.ManyToManyField(Media, blank=True)
+
+    def __str__(self):
+        return self.title
+
