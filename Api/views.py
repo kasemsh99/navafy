@@ -238,3 +238,13 @@ def post_create(request):
         return Response(serialized_post.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def user_posts_list(request, user_id):
+    try:
+        posts = Post.objects.filter(user_id=user_id)
+        serialized_post = PostSerializer(posts, many=True)
+        return Response(serialized_post.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'posts does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+

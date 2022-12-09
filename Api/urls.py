@@ -26,6 +26,7 @@ urlpatterns = [
 	path('media/<int:media_id>/like/add/', views.add_like),
 
 	path('post/create/', views.post_create),
+	path('user/<int:user_id>/post/list/', views.user_posts_list),
 
 
 
