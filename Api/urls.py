@@ -16,7 +16,7 @@ urlpatterns = [
 	path('media/<int:media_id>/like/add/', views.add_like),
 	path('media/liked/categorized/list/', views.categorized_liked_media),
 	
-	
+	path('media/categorized/list/', views.categorized_media),
 	path('favorite/create/', views.favorite_create),
 	path('favorite/<int:favorite_id>/media/add/', views.add_media_to_favorite),
 	path('favorite/', views.favorite_data),
