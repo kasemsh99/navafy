@@ -282,3 +282,13 @@ def user_follow(request):
         return Response({'data': 'followed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def user_unfollow(request):
+    try:
+        user_id = request.POST.get('user_id')
+        unfollow_user = CustomUser.objects.get(id=user_id)
+        Following.unfollow(user=request.user, another_account=unfollow_user)
+        return Response({'data': 'unfollowed successfully'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
