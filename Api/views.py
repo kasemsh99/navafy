@@ -224,3 +224,17 @@ def add_like(request, media_id):
         return Response({'data': 'the media data updated successfully.'}, status=status.HTTP_200_OK)
     else:
         return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def post_create(request):
+    try:
+        user_id = request.user.id
+        request.data._mutable = True
+        request.data['user'] = user_id
+        request.data._mutable = False
+        serialized_post = PostSerializer(data=request.data)
+        if serialized_post.is_valid():
+            serialized_post.save()
+        return Response(serialized_post.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)

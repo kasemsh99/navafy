@@ -25,6 +25,8 @@ urlpatterns = [
 	path('comment/create/', views.comment_create),
 	path('media/<int:media_id>/like/add/', views.add_like),
 
+	path('post/create/', views.post_create),
+
 
 
 ]
