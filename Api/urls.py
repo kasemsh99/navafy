@@ -20,6 +20,7 @@ urlpatterns = [
 	path('favorite/create/', views.favorite_create),
 	path('favorite/<int:favorite_id>/media/add/', views.add_media_to_favorite),
 	path('favorite/', views.favorite_data),
+	path('favorite/<int:favorite_id>/media/list/', views.favorite_medias_list),
 
 
 

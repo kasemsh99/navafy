@@ -189,3 +189,14 @@ def favorite_data(request):
         return Response(serialized_favorite.data, status=status.HTTP_200_OK)
     except:
         return Response({'data': 'favorite does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def favorite_medias_list(request, favorite_id):
+    try:
+        favorite = Favorite.objects.get(id=favorite_id)
+        medias = favorite.medias.all()
+        serialized_media = MediaSerializer(medias, many=True)
+        return Response(serialized_media.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'favorite does not exits!'}, status=status.HTTP_404_NOT_FOUND)
