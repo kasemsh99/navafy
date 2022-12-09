@@ -154,7 +154,7 @@ def categorized_liked_media(request):
 
 
 
- @api_view(['POST'])
+@api_view(['POST'])
 def favorite_create(request):
     try:
         user_id = request.user.id
@@ -167,3 +167,16 @@ def favorite_create(request):
         return Response(serialized_favorite.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def add_media_to_favorite(request, favorite_id):
+    media_id = request.POST.get('media')
+
+    favorite = Favorite.objects.filter(pk=favorite_id)
+    if favorite.exists():
+        favorite = favorite.first()
+        favorite.medias.add(media_id)
+        return Response({'data': 'the favorite data updated successfully.'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'data': 'favorite does not exits!'}, status=status.HTTP_404_NOT_FOUND)
