@@ -9,6 +9,7 @@ urlpatterns = [
 	path('profile/edit/', views.profile_edit),
 
 	path('artist/', views.artist_data),
+	path('artist/<int:artist_id>/profie/', views.artist_profile_data),
 	path('artist/edit/', views.artist_edit),
 
 	path('search/', views.search),

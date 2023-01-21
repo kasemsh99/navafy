@@ -88,6 +88,24 @@ def artist_data(request):
         return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(['GET'])
+def artist_profile_data(request, artist_id):
+    try:
+        artist = Artist.objects.get(pk=artist_id)
+        following = Following.objects.get(user_id=artist.user.id)
+        followed_users = following.followed.all().count()
+        follower_users = following.follower.all().count()
+        album_count = Album.objects.filter(artist=artist).count()
+        music_count = Media.objects.filter(type=1, artist=artist).count()
+        serialized_artist = ArtistSerializer(artist)
+
+        result = {'follower_users': follower_users, 'followed_users': followed_users,
+                  'album_count': album_count, 'music_count': music_count, **serialized_artist.data}
+        return Response(result, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 @api_view(['PUT'])
 def artist_edit(request):
