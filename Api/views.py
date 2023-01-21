@@ -335,3 +335,14 @@ def followed_users_list(request):
         return Response(serialized_users.data, status=status.HTTP_200_OK)
     except:
         return Response({'data': 'following does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def album_create(request):
+    try:
+        serialized_album = AlbumSerializer(data=request.data)
+        if serialized_album.is_valid():
+            serialized_album.save()
+            return Response(serialized_album.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
