@@ -346,3 +346,70 @@ def album_create(request):
             return Response(serialized_album.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def album_data(request, album_id):
+    try:
+        album = Album.objects.get(pk=album_id)
+        serialized_album = AlbumSerializer(album)
+        return Response(serialized_album.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'album does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def album_most_seen_list(request):
+    try:
+        albums = Album.objects.all().order_by('-seen')
+        serialized_albums = MediaSerializer(albums, many=True)
+        return Response(serialized_albums.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'albums does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', 'POST'])
+def media_play_count(request, media_id):
+    if request.method == 'GET':
+        try:
+            play_count = Media.objects.get(pk=media_id).play_count
+            return Response({'play_count': play_count}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        try:
+            media = Media.objects.get(pk=media_id)
+            media.play_count += 1
+            media.save()
+            return Response({'data': 'the media play count updated successfully', 'play_count': media.play_count}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', 'POST'])
+def media_seen_count(request, media_id):
+    if request.method == 'GET':
+        try:
+            seen = Media.objects.get(pk=media_id).seen
+            return Response({'seen': seen}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        try:
+            media = Media.objects.get(pk=media_id)
+            media.seen += 1
+            media.save()
+            return Response({'data': 'the media seen count updated successfully', 'seen': media.seen}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def followed_users_list(request):
+    try:
+        following = Following.objects.get(user_id=request.user.id)
+        followed_users = following.followed.all()
+        serialized_users = UserSerializer(followed_users, many=True)
+        return Response(serialized_users.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'following does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
