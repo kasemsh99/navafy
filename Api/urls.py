@@ -32,4 +32,5 @@ urlpatterns = [
 	path('user/unfollow/', views.user_unfollow),
 	path('user/followed/list/', views.followed_users_list),
 	path('music/newest/list/', views.music_newest_list),
+	path('music/most-seen/list/', views.music_most_seen_list),
 ]
