@@ -366,3 +366,22 @@ def album_most_seen_list(request):
         return Response(serialized_albums.data, status=status.HTTP_200_OK)
     except:
         return Response({'data': 'albums does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', 'POST'])
+def media_play_count(request, media_id):
+    if request.method == 'GET':
+        try:
+            play_count = Media.objects.get(pk=media_id).play_count
+            return Response({'play_count': play_count}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        try:
+            media = Media.objects.get(pk=media_id)
+            media.play_count += 1
+            media.save()
+            return Response({'data': 'the media play count updated successfully', 'play_count': media.play_count}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
