@@ -385,3 +385,20 @@ def media_play_count(request, media_id):
         except:
             return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
+
+@api_view(['GET', 'POST'])
+def media_seen_count(request, media_id):
+    if request.method == 'GET':
+        try:
+            seen = Media.objects.get(pk=media_id).seen
+            return Response({'seen': seen}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        try:
+            media = Media.objects.get(pk=media_id)
+            media.seen += 1
+            media.save()
+            return Response({'data': 'the media seen count updated successfully', 'seen': media.seen}, status=status.HTTP_200_OK)
+        except:
+            return Response({'data': 'media does not exits!'}, status=status.HTTP_404_NOT_FOUND)
