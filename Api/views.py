@@ -88,6 +88,24 @@ def artist_data(request):
         return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(['GET'])
+def artist_profile_data(request, artist_id):
+    try:
+        artist = Artist.objects.get(pk=artist_id)
+        following = Following.objects.get(user_id=artist.user.id)
+        followed_users = following.followed.all().count()
+        follower_users = following.follower.all().count()
+        album_count = Album.objects.filter(artist=artist).count()
+        music_count = Media.objects.filter(type=1, artist=artist).count()
+        serialized_artist = ArtistSerializer(artist)
+
+        result = {'follower_users': follower_users, 'followed_users': followed_users,
+                  'album_count': album_count, 'music_count': music_count, **serialized_artist.data}
+        return Response(result, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 @api_view(['PUT'])
 def artist_edit(request):
@@ -103,33 +121,48 @@ def artist_edit(request):
     return Response({'data': 'artist does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['GET'])
+@@api_view(['GET'])
 def search(request):
     media_lookup = Q()
     artist_lookup = Q()
-    if title := request.GET.get('title', ''):
-        media_lookup &= Q(title__contains=title)
-    if media_type := request.GET.get('type', ''):
-        media_lookup &= Q(type=media_type)
-    if genre := request.GET.get('genre', ''):
-        artist_lookup &= Q(genre=genre)
-        media_lookup &= Q(genre=genre)
-    if username := request.GET.get('username', ''):
-        artist_lookup &= Q(user__username__contains=username)
-        media_lookup &= Q(artist__user__username__contains=username)
-    if first_name := request.GET.get('first_name', ''):
-        artist_lookup &= Q(user__first_name__contains=first_name)
-        media_lookup &= Q(artist__user__first_name__contains=first_name)
-    if last_name := request.GET.get('last_name', ''):
-        artist_lookup &= Q(user__last_name__contains=last_name)
-        media_lookup &= Q(artist__user__last_name__contains=last_name)
-
-    artists, medias = [], []
-    if len(media_lookup.children) != 0:
-        medias = list(MediaSerializer(Media.objects.filter(media_lookup), many=True).data)
-    if len(artist_lookup.children) != 0:
-        artists = list(ArtistSerializer(Artist.objects.filter(artist_lookup), many=True).data)
-    return Response(list(chain(artists, medias)), status=status.HTTP_200_OK)
+    user_lookup = Q()
+    search_type = request.GET.get('searchType', 'media')
+    if search_type == 'media':
+        if title := request.GET.get('title', ''):
+            media_lookup &= Q(title__contains=title)
+        if media_type := request.GET.get('type', ''):
+            media_lookup &= Q(type=media_type)
+        if genre := request.GET.get('genre', ''):
+            media_lookup &= Q(genre=genre)
+        if username := request.GET.get('username', ''):
+            media_lookup &= Q(artist__user__username__contains=username)
+        if first_name := request.GET.get('first_name', ''):
+            media_lookup &= Q(artist__user__first_name__contains=first_name)
+        if last_name := request.GET.get('last_name', ''):
+            media_lookup &= Q(artist__user__last_name__contains=last_name)
+        medias = MediaSerializer(Media.objects.filter(media_lookup), many=True).data
+        return Response(medias, status=status.HTTP_200_OK)
+    elif search_type == 'artist':
+        if genre := request.GET.get('genre', ''):
+            artist_lookup &= Q(genre=genre)
+        if username := request.GET.get('username', ''):
+            artist_lookup &= Q(user__username__contains=username)
+        if first_name := request.GET.get('first_name', ''):
+            artist_lookup &= Q(user__first_name__contains=first_name)
+        if last_name := request.GET.get('last_name', ''):
+            artist_lookup &= Q(user__last_name__contains=last_name)
+        artists = ArtistSerializer(Artist.objects.filter(artist_lookup), many=True).data
+        return Response(artists, status=status.HTTP_200_OK)
+    elif search_type == 'user':
+        if username := request.GET.get('username', ''):
+            user_lookup &= Q(username__contains=username)
+        if first_name := request.GET.get('first_name', ''):
+            user_lookup &= Q(first_name__contains=first_name)
+        if last_name := request.GET.get('last_name', ''):
+            user_lookup &= Q(last_name__contains=last_name)
+        users = UserSerializer(CustomUser.objects.filter(user_lookup), many=True).data
+        return Response(users, status=status.HTTP_200_OK)
+    return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
 
 
     
@@ -302,3 +335,14 @@ def followed_users_list(request):
         return Response(serialized_users.data, status=status.HTTP_200_OK)
     except:
         return Response({'data': 'following does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+def album_create(request):
+    try:
+        serialized_album = AlbumSerializer(data=request.data)
+        if serialized_album.is_valid():
+            serialized_album.save()
+            return Response(serialized_album.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
