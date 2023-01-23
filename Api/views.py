@@ -324,7 +324,16 @@ def music_most_seen_list(request):
     except:
         return Response({'data': 'musics does not exits!'}, status=status.HTTP_404_NOT_FOUND)
 
-
+@api_view(['GET'])
+def music_by_genre_list(request):
+    try:
+        genre = request.POST.get('genre')
+        musics = Media.objects.filter(type=1, genre=genre)
+        serialized_musics = MediaSerializer(musics, many=True)
+        return Response(serialized_musics.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'musics does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+        
 @api_view(['POST'])
 def user_follow(request):
     try:
