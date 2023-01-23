@@ -93,7 +93,7 @@ def artist_profile_data(request, artist_id):
     try:
         artist = Artist.objects.get(pk=artist_id)
         following = Following.objects.get(user_id=artist.user.id)
-        followed_users = following.followed.all().count()
+        _users = following.followed.all().count()
         follower_users = following.follower.all().count()
         album_count = Album.objects.filter(artist=artist).count()
         music_count = Media.objects.filter(type=1, artist=artist).count()
@@ -305,6 +305,16 @@ def media_create(request):
             return Response(serialized_media.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def music_newest_list(request):
+    try:
+        musics = Media.objects.filter(type=1).order_by('-create_datetime')
+        serialized_musics = MediaSerializer(musics, many=True)
+        return Response(serialized_musics.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'musics does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 def user_follow(request):
