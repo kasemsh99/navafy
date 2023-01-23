@@ -346,3 +346,23 @@ def album_create(request):
             return Response(serialized_album.data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'data': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def album_data(request, album_id):
+    try:
+        album = Album.objects.get(pk=album_id)
+        serialized_album = AlbumSerializer(album)
+        return Response(serialized_album.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'album does not exits!'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def album_most_seen_list(request):
+    try:
+        albums = Album.objects.all().order_by('-seen')
+        serialized_albums = MediaSerializer(albums, many=True)
+        return Response(serialized_albums.data, status=status.HTTP_200_OK)
+    except:
+        return Response({'data': 'albums does not exits!'}, status=status.HTTP_404_NOT_FOUND)
