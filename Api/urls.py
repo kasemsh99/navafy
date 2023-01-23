@@ -33,4 +33,5 @@ urlpatterns = [
 	path('user/followed/list/', views.followed_users_list),
 	path('media/<int:media_id>/play/count/', views.media_play_count),
 	path('media/<int:media_id>/seen/count/', views.media_seen_count),
+	 path('user/followed/list/', views.followed_users_list),
 ]   
